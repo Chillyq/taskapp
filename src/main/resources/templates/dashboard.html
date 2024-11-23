@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Task Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Task Dashboard</h1>
+    <a href="/logout" class="btn logout-btn">Logout</a>
+  </header>
+  <a th:href="@{/tasks/new}" class="btn create-btn">Create New Task</a>
+  <table class="task-table">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Due Date</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+      <td th:text="${task.title}">Task Title</td>
+      <td th:text="${task.description}">Task Description</td>
+      <td th:text="${task.dueDate}">Task Due Date</td>
+      <td>
+        <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn edit-btn">Edit</a>
+        <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="btn delete-btn">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
