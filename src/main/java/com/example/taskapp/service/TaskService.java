@@ -6,12 +6,10 @@ import com.example.taskapp.repository.TaskRepo;
 import com.example.taskapp.repository.UserRepo;
 import com.example.taskapp.repository.CategRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +27,10 @@ public class TaskService {
         this.categRepo = categRepo;
     }
 
+    public Page<Task> getTasks(Pageable pageable) {
+        return taskRepo.findAll(pageable);
+    }
+
     public List<Task> getAllTasksForUser(User user) {
         return taskRepo.findByUser(user);
     }
@@ -37,9 +39,6 @@ public class TaskService {
         return taskRepo.findByIdAndUser(id, user);
     }
 
-    public Page<Task> getTasksForUser(User user, int page, int size) {
-        return taskRepo.findByUserId(user.getId(), (Pageable) PageRequest.of(page, size));
-    }
 
     @Transactional
     public Task createTask(Task task, Long categoryId, User user) {

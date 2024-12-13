@@ -12,17 +12,24 @@
     <th>Title</th>
     <th>Description</th>
     <th>Due Date</th>
+    <th>Category</th>
     <th>Actions</th>
   </tr>
   <tr th:each="task : ${tasks}">
     <td th:text="${task.title}">Task Title</td>
     <td th:text="${task.description}">Description</td>
     <td th:text="${task.dueDate}">Due Date</td>
+    <td th:text="${task.category != null ? task.category.name : 'Uncategorized'}">Task Category</td>
     <td>
       <a th:href="@{/tasks/edit/{id}(id=${task.id})}">Edit</a> |
       <a th:href="@{/tasks/delete/{id}(id=${task.id})}">Delete</a>
     </td>
   </tr>
 </table>
+<div>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/tasks/main(page=${i}, size=${5})}" th:text="${i + 1}"></a>
+        </span>
+</div>
 </body>
 </html>

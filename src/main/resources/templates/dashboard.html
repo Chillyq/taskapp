@@ -17,6 +17,7 @@
       <th>Title</th>
       <th>Description</th>
       <th>Due Date</th>
+      <th>Category</th>
       <th>Actions</th>
     </tr>
     </thead>
@@ -25,6 +26,7 @@
       <td th:text="${task.title}">Task Title</td>
       <td th:text="${task.description}">Task Description</td>
       <td th:text="${task.dueDate}">Task Due Date</td>
+      <td th:text="${task.category != null ? task.category.name : 'Uncategorized'}">Task Category</td>
       <td>
         <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn edit-btn">Edit</a>
         <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="btn delete-btn">Delete</a>

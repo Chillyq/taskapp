@@ -34,13 +34,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/login") // Custom login page
-                        .defaultSuccessUrl("/tasks", true) // Redirect to tasks after login
-                        .failureUrl("/login?error=true") // Redirect with error parameter on failure
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/tasks", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // Redirect to login page after logout
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 

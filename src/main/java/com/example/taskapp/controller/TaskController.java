@@ -2,6 +2,7 @@ package com.example.taskapp.controller;
 import com.example.taskapp.entity.Task;
 import com.example.taskapp.entity.User;
 import com.example.taskapp.service.TaskService;
+import com.example.taskapp.service.CategoryService;
 import com.example.taskapp.util.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,7 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/tasks")
@@ -17,33 +21,43 @@ public class TaskController {
 
     private final TaskService taskService;
     private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final CategoryService categoryService;
 
     @Autowired
-    public TaskController(TaskService taskService, AuthenticatedUserProvider authenticatedUserProvider) {
+    public TaskController(TaskService taskService, AuthenticatedUserProvider authenticatedUserProvider, CategoryService categoryService) {
         this.taskService = taskService;
         this.authenticatedUserProvider = authenticatedUserProvider;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/main")
-    public String mainPage(Model model) {
-        var user = authenticatedUserProvider.getAuthenticatedUserProvider(); // Use the provider to get the user
-        model.addAttribute("tasks", taskService.getAllTasksForUser(user));
+    public String listTasks(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "5") int size,
+                            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Task> taskPage = taskService.getTasks(pageable);
+
+        model.addAttribute("tasks", taskPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", taskPage.getTotalPages());
         return "main";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("task", new Task());
-        return "create-task"; // Thymeleaf template name
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "create-task";
     }
 
 
     @PostMapping("/save")
-    public String saveTask(@ModelAttribute Task task) {
-        var user = authenticatedUserProvider.getAuthenticatedUserProvider(); // Get logged-in user
-        task.setUser(user); // Associate the task with the logged-in user
-        taskService.createTask(task, null, user); // Save the task
-        return "redirect:/tasks"; // Redirect to the dashboard
+    public String saveTask(@ModelAttribute Task task, @RequestParam Long categoryId) {
+        task.setCategory(categoryService.getCategoryById(categoryId));
+        var user = authenticatedUserProvider.getAuthenticatedUserProvider();
+        task.setUser(user);
+        taskService.createTask(task, categoryId, user);
+        return "redirect:/tasks";
     }
 
     @GetMapping("/edit/{id}")
@@ -53,6 +67,7 @@ public class TaskController {
 
         if (taskOptional.isPresent()) {
             model.addAttribute("task", taskOptional.get());
+            model.addAttribute("categories", categoryService.getAllCategories());
             return "edit-task";
         } else {
             return "redirect:/tasks/main?error=TaskNotFound";
@@ -61,9 +76,10 @@ public class TaskController {
 
 
     @PostMapping("/update/{id}")
-    public String updateTask(@PathVariable Long id, @ModelAttribute Task updatedTask) {
+    public String updateTask(@PathVariable Long id, @ModelAttribute Task updatedTask, @RequestParam Long categoryId) {
         var user = authenticatedUserProvider.getAuthenticatedUserProvider();
-        taskService.updateTask(id, updatedTask, null, user);
+        updatedTask.setCategory(categoryService.getCategoryById(categoryId));
+        taskService.updateTask(id, updatedTask, categoryId, user);
         return "redirect:/tasks";
     }
 
@@ -72,14 +88,17 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id) {
         var user = authenticatedUserProvider.getAuthenticatedUserProvider();
         taskService.deleteTask(id, user);
-        return "redirect:/tasks/main";
+        return "redirect:/tasks";
     }
 
     @GetMapping
     public String dashboard(Model model) {
         var user = authenticatedUserProvider.getAuthenticatedUserProvider();
         model.addAttribute("tasks", taskService.getAllTasksForUser(user));
-        return "dashboard"; // Thymeleaf template name for dashboard
+        return "dashboard";
     }
 
 }
+
+
+

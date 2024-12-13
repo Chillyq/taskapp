@@ -24,6 +24,14 @@
         <label for="dueDate">Due Date:</label>
         <input type="date" id="dueDate" th:field="*{dueDate}" required />
       </div>
+      <div>
+        <label>Category:</label>
+        <select name="categoryId" required>
+          <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+                  th:selected="${category.id} == ${task.category.id}">
+          </option>
+        </select>
+      </div>
       <button type="submit" class="btn">Update Task</button>
     </form>
   </div>
