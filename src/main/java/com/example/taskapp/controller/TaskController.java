@@ -98,6 +98,19 @@ public class TaskController {
         return "dashboard";
     }
 
+    @GetMapping("/paginated")
+    public String showDashboard(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Task> taskPage = taskService.getTasksWithPagination(page, 10);
+        System.out.println("Total pages: " + taskPage.getTotalPages());
+        System.out.println("Tasks: " + taskPage.getContent());
+
+        model.addAttribute("tasks", taskPage.getContent());
+        model.addAttribute("totalPages", taskPage.getTotalPages());
+        model.addAttribute("currentPage", page);
+
+        return "dashboard";
+    }
+
 }
 
 

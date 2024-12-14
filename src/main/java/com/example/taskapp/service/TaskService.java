@@ -6,6 +6,7 @@ import com.example.taskapp.repository.TaskRepo;
 import com.example.taskapp.repository.UserRepo;
 import com.example.taskapp.repository.CategRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,11 @@ public class TaskService {
     }
 
     public Page<Task> getTasks(Pageable pageable) {
+        return taskRepo.findAll(pageable);
+    }
+
+    public Page<Task> getTasksWithPagination(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return taskRepo.findAll(pageable);
     }
 

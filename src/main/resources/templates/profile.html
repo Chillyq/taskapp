@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+<h1>Profile</h1>
+<form th:action="@{/profile}" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Username:</label>
+        <input type="text" name="username" th:value="${user.username}" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="email" name="email" th:value="${user.email}" />
+    </div>
+    <div>
+        <label>Photo:</label>
+        <input type="file" name="photo" />
+        <div>
+            <img th:if="${user.photo != null}" th:src="@{'data:image/jpeg;base64,' + ${T(org.apache.tomcat.util.codec.binary.Base64).encodeBase64String(user.photo)}}" alt="Profile Photo" style="width: 150px; height: 150px;" />
+        </div>
+    </div>
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

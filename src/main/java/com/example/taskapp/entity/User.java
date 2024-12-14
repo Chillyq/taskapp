@@ -40,4 +40,10 @@ public class User {
     public enum Role {
         ADMIN, USER;
     }
+
+    private String name;
+    private String bio;
+    private String photoUrl;
+    @Lob
+    private byte[] photo;
 }

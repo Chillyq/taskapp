@@ -4,6 +4,13 @@
   <title>Dashboard</title>
 </head>
 <body>
+<header>
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <h1>Welcome to TaskApp</h1>
+    </div>
+  </div>
+</header>
 <h1>Welcome to the Dashboard</h1>
 <a th:href="@{/tasks/new}">Create New Task</a>
 <h2>All Tasks</h2>
@@ -26,10 +33,6 @@
     </td>
   </tr>
 </table>
-<div>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{/tasks/main(page=${i}, size=${5})}" th:text="${i + 1}"></a>
-        </span>
-</div>
+
 </body>
 </html>

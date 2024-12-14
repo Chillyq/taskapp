@@ -8,7 +8,7 @@
 <div class="container">
   <header>
     <h1>Task Dashboard</h1>
-    <a href="/logout" class="btn logout-btn">Logout</a>
+    <a href="/login" class="btn logout-btn">Logout</a>
   </header>
   <a th:href="@{/tasks/new}" class="btn create-btn">Create New Task</a>
   <table class="task-table">
@@ -34,6 +34,13 @@
     </tr>
     </tbody>
   </table>
+</div>
+<div>
+  <ul>
+    <li th:each="pageNum : ${#numbers.sequence(0, (totalPages > 0 ? totalPages - 1 : 0))}">
+      <a th:href="@{'/dashboard?page=' + ${pageNum}}">[[${pageNum + 1}]]</a>
+    </li>
+  </ul>
 </div>
 </body>
 </html>
